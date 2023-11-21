@@ -72,21 +72,19 @@ void doit(int fd){
           return;
       }
       if(strcasecmp(method, "GET")){
-
+          serve_static(fd, filename, sbuf.st_size, method);
       }else{
-
+          serve_static(fd, filename, sbuf.st_size, method);
       }
-
-      serve_static(fd, filename, sbuf.st_size, method);
   }else{
       if(!(S_ISREG(sbuf.st_mode)) || !(S_IXUSR & sbuf.st_mode)){
           clienterror(fd, filename, "403" , "Forbidden", "Tiny couldn't run the CGI program");
           return;
       }
       if(strcasecmp(method, "GET")){
-          serve_dynamic(fd, filename, cgiargs, 0);
+          serve_dynamic(fd, filename, cgiargs, "GET");
       }else{
-          serve_dynamic(fd, filename, cgiargs, 1);
+          serve_dynamic(fd, filename, cgiargs, "HEAD");
       }
   }
 }
@@ -142,7 +140,7 @@ int parse_uri(char *uri, char *filename, char *cgiargs){
     }
 }
 
-void serve_static(int fd, char *filename, int filesize, char *method){
+void serve_static(int fd, char *filename, int filesize, char method){
     int srcfd;
     char *srcp, filetype[MAXLINE], buf[MAXBUF];
 
@@ -157,7 +155,7 @@ void serve_static(int fd, char *filename, int filesize, char *method){
     printf("Response headers:\n");
     printf("%s", buf);
 
-    if(strcasecmp(method, "GET") == 0){
+    if(!strcasecmp(method, "GET")){
         /* Send response body to client */
         srcfd = Open(filename, O_RDONLY, 0);
 //    srcp = Mmap(0, filesize, PROT_READ, MAP_PRIVATE, srcfd, 0);
