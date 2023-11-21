@@ -114,7 +114,7 @@ int parse_uri(char *uri, char *filename, char *cgiargs){
     if(!strstr(uri, "cgi-bin")){
         strcpy(cgiargs, "");
         strcpy(filename, ".");
-        strcpy(filename, uri);
+        strcat(filename, uri);
         if(uri[strlen(uri)-1] == '/')
             strcat(filename, "home.html");
         return 1;
@@ -131,6 +131,7 @@ int parse_uri(char *uri, char *filename, char *cgiargs){
         return 0;
     }
 }
+
 void serve_static(int fd, char *filename, int filesize){
     int srcfd;
     char *srcp, filetype[MAXLINE], buf[MAXBUF];
@@ -166,6 +167,8 @@ void get_filetype(char *filename, char *filetype){
         strcpy(filetype, "image/png");
     else if (strstr(filename, ".jpg"))
         strcpy(filetype, "image/jpeg");
+    else if (strstr(filename, ".mpg"))
+        strcpy(filetype, "video/mpg");
     else
         strcpy(filetype, "text/plain");
 }
