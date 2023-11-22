@@ -82,9 +82,9 @@ void doit(int fd){
           return;
       }
       if(strcasecmp(method, "GET")){
-          serve_dynamic(fd, filename, cgiargs, "GET");
+          serve_dynamic(fd, filename, cgiargs, method);
       }else{
-          serve_dynamic(fd, filename, cgiargs, "HEAD");
+          serve_dynamic(fd, filename, cgiargs, method);
       }
   }
 }
@@ -140,7 +140,7 @@ int parse_uri(char *uri, char *filename, char *cgiargs){
     }
 }
 
-void serve_static(int fd, char *filename, int filesize, char method){
+void serve_static(int fd, char *filename, int filesize, char *method){
     int srcfd;
     char *srcp, filetype[MAXLINE], buf[MAXBUF];
 
